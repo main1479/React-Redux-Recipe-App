@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { paginate } from '../utils/paginate';
 import ErrorMessage from './ErrorMessage';
 import LoadingSpinner from './LoadingSpinner';
@@ -7,25 +8,23 @@ import Pagination from './Pagination';
 
 export default function SearchResults() {
 	const { results, loading, isError } = useSelector((state) => state.search);
-	const [recipeId, setRecipeId] = useState(window.location.hash.slice(1));
 	const { resultsPerPage, page } = useSelector((state) => state.search);
+	const [searched, setSearched] = useState(false);
 	useEffect(() => {
-		window.addEventListener('hashchange', () => {
-			setRecipeId(window.location.hash.slice(1));
-		});
+		if (loading) {
+			setSearched(true);
+		}
 	}, [results, loading, isError]);
 	if (loading) return <LoadingSpinner />;
 	if (isError) return <ErrorMessage />;
 	return (
 		<div className="search-results">
 			<ul className="results">
+				{results.length < 1 && searched && <ErrorMessage />}
 				{results.length > 0 &&
 					paginate(results, page, resultsPerPage).map((recipe, i) => (
 						<li className="preview" key={recipe.id + i}>
-							<a
-								className={`preview__link preview__link${recipeId === recipe.id ? '--active' : ''}`}
-								href={`#${recipe.id}`}
-							>
+							<NavLink className="preview__link" to={`/${recipe.id}`}>
 								<figure className="preview__fig">
 									<img src={recipe.image_url} alt={recipe.title} />
 								</figure>
@@ -40,7 +39,7 @@ export default function SearchResults() {
 										</div>
 									)}
 								</div>
-							</a>
+							</NavLink>
 						</li>
 					))}
 			</ul>

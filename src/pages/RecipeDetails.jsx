@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Message from '../components/Message';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 import RecipeBanner from '../components/RecipeBanner';
@@ -10,16 +9,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setRecipe } from '../store/recipeSlice';
 import { toggleBookmark } from '../store/recipeSlice';
 import { handleBookmark } from '../store/bookmarkSlice';
+import { useParams } from 'react-router-dom';
 
-export default function RecipeDetails() {
-	const [recipeId, setRecipeId] = useState(window.location.hash.slice(1));
+export default function RecipeDetails({ setFetched }) {
 	const bookmarks = useSelector((state) => state.bookmarks);
+	const recipeId = useParams().id;
 	const { data, error, isLoading } = useGetRecipeQuery(recipeId);
 	const recipe = useSelector((state) => state.recipe);
 	const [servings, setServings] = useState(0);
 	const dispatch = useDispatch();
-
 	useEffect(() => {
+		if (isLoading) {
+			setFetched(true);
+		}
 		if (data) {
 			setServings(data.data.recipe.servings);
 			dispatch(setRecipe(data.data.recipe));
@@ -28,14 +30,10 @@ export default function RecipeDetails() {
 				dispatch(toggleBookmark());
 			}
 		}
-		window.addEventListener('hashchange', () => {
-			setRecipeId(window.location.hash.slice(1));
-		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, dispatch]);
 
 	if (isLoading) return <LoadingSpinner />;
-	if (!recipeId) return <Message />;
 	if (error) return <ErrorMessage error={error} />;
 
 	const updateServings = (type) => {

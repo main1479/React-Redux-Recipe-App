@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 
 export default function Navbar() {
 	const bookmarks = useSelector((state) => state.bookmarks);
-	const [recipeId, setRecipeId] = useState(window.location.hash.slice(1));
-	useEffect(() => {
-		window.addEventListener('hashchange', () => {
-			setRecipeId(window.location.hash.slice(1));
-		});
-	}, [recipeId]);
 	return (
 		<nav className="nav">
 			<ul className="nav__list">
@@ -42,12 +36,7 @@ export default function Navbar() {
 
 							{bookmarks.map((bookmark, i) => (
 								<li className="preview" key={bookmark.id + i}>
-									<a
-										className={`preview__link ${
-											recipeId === bookmark.id ? 'preview__link--active' : ''
-										}`}
-										href={`#${bookmark.id}`}
-									>
+									<NavLink className="preview__link" to={`/${bookmark.id}`}>
 										<figure className="preview__fig">
 											<img src={bookmark.image_url} alt={bookmark.title} />
 										</figure>
@@ -55,7 +44,7 @@ export default function Navbar() {
 											<h4 className="preview__title">{bookmark.title}</h4>
 											<p className="preview__publisher">{bookmark.publisher}</p>
 										</div>
-									</a>
+									</NavLink>
 								</li>
 							))}
 						</ul>

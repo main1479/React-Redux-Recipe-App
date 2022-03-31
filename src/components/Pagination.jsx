@@ -29,6 +29,9 @@ export default function Pagination() {
 							<span>Page {page - 1}</span>
 						</button>
 					)}
+					<button className="btn--inline pagination__btn--current">
+						<span>Page {page}</span>
+					</button>
 					{page < numPages && (
 						<button
 							className="btn--inline pagination__btn--next"
