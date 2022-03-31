@@ -34,9 +34,9 @@ export default function RecipeDetails() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, dispatch]);
 
+	if (isLoading) return <LoadingSpinner />;
 	if (!recipeId) return <Message />;
 	if (error) return <ErrorMessage error={error} />;
-	if (isLoading) return <LoadingSpinner />;
 
 	const updateServings = (type) => {
 		if (type === 'decrease') {

@@ -7,15 +7,14 @@ export const bookmarkSlice = createSlice({
 	initialState,
 	reducers: {
 		handleBookmark: (state, action) => {
-			if (!action.payload.bookmarked) {
+			const index = state.findIndex((el) => el.id === action.payload[0].id);
+			if (index < 0) {
 				state = [...state, ...action.payload];
-				localStorage.setItem('bookmarks', JSON.stringify(state));
-				return state;
 			} else {
-				state = state.filter((el) => el.id !== action.payload.id);
-				localStorage.setItem('bookmarks', JSON.stringify(state));
-				return state;
+				state = state.filter((el) => el.id !== action.payload[0].id);
 			}
+			localStorage.setItem('bookmarks', JSON.stringify(state));
+			return state;
 		},
 	},
 });

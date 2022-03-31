@@ -22,10 +22,14 @@ export const searchSlice = createSlice({
 
 			return state;
 		},
+		changePage: (state, action) => {
+			state.page = action.payload;
+			return state;
+		},
 	},
 });
 
 // Action creators are generated for each case reducer function
-export const { loadSearch } = searchSlice.actions;
+export const { loadSearch, changePage } = searchSlice.actions;
 
 export default searchSlice.reducer;

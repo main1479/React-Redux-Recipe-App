@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { paginate } from '../utils/paginate';
 import ErrorMessage from './ErrorMessage';
 import LoadingSpinner from './LoadingSpinner';
 import Pagination from './Pagination';
@@ -7,7 +8,7 @@ import Pagination from './Pagination';
 export default function SearchResults() {
 	const { results, loading, isError } = useSelector((state) => state.search);
 	const [recipeId, setRecipeId] = useState(window.location.hash.slice(1));
-
+	const { resultsPerPage, page } = useSelector((state) => state.search);
 	useEffect(() => {
 		window.addEventListener('hashchange', () => {
 			setRecipeId(window.location.hash.slice(1));
@@ -19,7 +20,7 @@ export default function SearchResults() {
 		<div className="search-results">
 			<ul className="results">
 				{results.length > 0 &&
-					results.map((recipe, i) => (
+					paginate(results, page, resultsPerPage).map((recipe, i) => (
 						<li className="preview" key={recipe.id + i}>
 							<a
 								className={`preview__link preview__link${recipeId === recipe.id ? '--active' : ''}`}
